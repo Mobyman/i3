@@ -1,0 +1,294 @@
+[bar/i3wmthemer_bar]
+monitor = ${env:MONITOR:eDP-1}
+
+width = 100%
+height = 20
+radius = 3
+fixed-center = false
+
+background = #162025
+foreground = #cccccc
+
+line-size = 3
+line-color = #00ffffff
+
+border-size = 0
+border-color = #00ffffff
+
+padding-left = 0
+padding-right = 2
+
+module-margin-left = 1
+module-margin-right = 2
+
+font-0 = "GohuFont:pixelsize=12;-2"
+font-1 = "Font Awesome 5 Free:style=Solid:pixelsize=10;-2"
+font-2 = "Font Awesome 5 Brands:pixelsize=10;0"
+font-3 = "Weather Icons:size=8;1"
+
+modules-left = i3
+modules-center =
+modules-right = keyboard owm battery wlan pub-ip pub-ip-menu pulseaudio date powermenu
+
+tray-position = center
+tray-padding = 2
+
+cursor-click = pointer
+cursor-scroll = ns-resize
+
+[module/i3]
+type = internal/i3
+format = <label-state> <label-mode>
+index-sort = true
+wrapping-scroll = false
+
+label-mode-padding = 2
+label-mode-foreground = #cccccc
+label-mode-background = #193a48
+
+label-focused = %index%
+label-focused-background = #294a58
+label-focused-foreground = #cccccc
+label-focused-padding = 2
+
+label-unfocused = %index%
+label-unfocused-background = #193a48
+label-unfocused-foreground = #888888
+label-unfocused-padding = 2
+
+label-visible = %index%
+label-visible-background = #294a58
+label-visible-foreground = #162025
+label-visible-padding = 2
+
+label-urgent = %index%
+label-urgent-background = #BA2922
+label-urgent-padding = 2
+
+[module/wlan]
+type = internal/network
+interface = wlp2s0
+interval = 3.0
+
+format-connected = <ramp-signal> <label-connected>
+format-connected-foreground = #162025
+format-connected-background = #193a48
+format-connected-padding = 2
+label-connected = %essid% %signal%%
+
+format-disconnected =
+
+ramp-signal-0 = 
+ramp-signal-1 = 
+ramp-signal-2 = 
+ramp-signal-3 = 
+ramp-signal-4 = 
+ramp-signal-foreground = #ffffff
+
+[module/date]
+type = internal/date
+interval = 5
+
+date = " %d.%m.%Y"
+date-alt = " %d.%m.%Y"
+
+time = %H:%M
+time-alt = %H:%M
+
+#format-prefix = 
+format-foreground = #cccccc
+format-background = #2a474a
+format-padding = 2
+
+label = %time%%{F#999}%date%
+
+
+[module/powermenu]
+type = custom/menu
+
+expand-right = true
+
+format-spacing = 1
+
+label-open = 
+label-open-foreground = #cccccc
+label-close =  cancel
+label-close-foreground = #cccccc
+label-separator = |
+label-separator-foreground = #cccccc
+
+menu-100-0 = reboot
+menu-100-0-exec = menu-open-101
+menu-100-1 = power off
+menu-100-1-exec = menu-open-102
+
+menu-101-0 = cancel
+menu-101-0-exec = menu-open-100
+menu-101-1 = reboot
+menu-101-1-exec = sudo reboot
+
+menu-102-0 = power off
+menu-102-0-exec = sudo poweroff
+menu-102-1 = cancel
+menu-102-1-exec = menu-open-1000
+
+[module/pub-ip]
+type = custom/script
+exec = ~/.config/polybar/pub-ip.sh
+interval = 10
+format-background = #94005D
+format-foreground = #FFFFFF
+format-padding = 2
+label = %{A1:menu-open-0:}%output%%{A}
+
+[module/pub-ip-menu]
+type = custom/menu
+expand-right = true
+
+label-mode-background = #E4007D
+label-open = %{O-20}
+label-open-foreground = #E4007D
+label-close =  cancel
+label-close-foreground = #E4007D
+label-separator = " "
+label-separator-foreground = #cccccc
+
+menu-0-0 = mobyman
+menu-0-0-exec = menu-open-1
+menu-0-1 = nevosoft
+menu-0-1-exec = menu-open-2
+menu-0-2 = stop-all
+menu-0-2-exec = sudo systemctl stop openvpn
+
+menu-1-0 = start
+menu-1-0-exec = sudo systemctl start openvpn@mobyman 
+menu-1-1 = stop
+menu-1-1-exec = sudo systemctl stop openvpn@mobyman
+
+menu-2-0 = start
+menu-2-0-exec = sudo systemctl start openvpn@nevosoft
+menu-2-1 = stop
+menu-2-1-exec = sudo systemctl stop openvpn@nevosoft
+
+[module/backlight]
+type = custom/script
+exec = ~/.config/polybar/backlight.sh
+interval = 10
+format-background = #2a474
+format-foreground = #E4007D
+format-padding = 1
+label = %output%%
+
+
+[module/owm]
+type = custom/script
+exec = ~/.config/polybar/owm.sh
+interval = 600
+label-font = 4
+format-foreground = #ffff00
+
+[module/battery]
+type = internal/battery
+
+; This is useful in case the battery never reports 100% charge
+full-at = 98
+
+; Use the following command to list batteries and adapters:
+; $ ls -1 /sys/class/power_supply/
+battery = BAT0
+adapter = AC0
+
+; If an inotify event haven't been reported in this many
+; seconds, manually poll for new values.
+;
+; Needed as a fallback for systems that don't report events
+; on sysfs/procfs.
+;
+; Disable polling by setting the interval to 0.
+;
+; Default: 5
+poll-interval = 5
+
+; see "man date" for details on how to format the time string
+; NOTE: if you want to use syntax tags here you need to use %%{...}
+; Default: %H:%M:%S
+time-format = %H:%M
+
+; Available tags:
+;   <label-charging> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+;   <animation-charging>
+format-charging = <animation-charging> <label-charging>
+
+; Available tags:
+;   <label-discharging> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+;   <animation-discharging>
+format-discharging = <ramp-capacity> <label-discharging>
+
+; Available tags:
+;   <label-full> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+;format-full = <ramp-capacity> <label-full>
+
+; Available tokens:
+;   %percentage% (default)
+;   %time%
+;   %consumption% (shows current charge rate in watts)
+label-charging = %percentage%% (%time%)
+
+; Available tokens:
+;   %percentage% (default)
+;   %time%
+;   %consumption% (shows current discharge rate in watts)
+label-discharging = %percentage%% (%time%)
+
+; Available tokens:
+;   %percentage% (default)
+label-full = %{F#0f0}
+
+; Only applies if <ramp-capacity> is used
+ramp-capacity-0 = %{F#f00}
+ramp-capacity-1 = %{F#f00}
+ramp-capacity-2 = %{F#ff0}
+ramp-capacity-3 = %{F#ff0}
+ramp-capacity-4 = %{F#ff0}
+
+; Only applies if <bar-capacity> is used
+bar-capacity-width = 10
+
+; Only applies if <animation-charging> is used
+animation-charging-0 = %{F#ff0}
+animation-charging-1 = %{F#ff0}
+animation-charging-2 = %{F#ff0}
+animation-charging-3 = %{F#ff0}
+animation-charging-4 = %{F#ff0}
+; Framerate in milliseconds
+animation-charging-framerate = 1000
+
+; Only applies if <animation-discharging> is used
+animation-discharging-0 = 
+animation-discharging-1 = 
+animation-discharging-2 = 
+animation-discharging-3 = 
+animation-discharging-4 = 
+; Framerate in milliseconds
+animation-discharging-framerate = 500
+
+[module/keyboard]
+type = internal/xkeyboard
+
+; List of indicators to ignore
+blacklist-0 = num lock
+blacklist-1 = scroll lock
+
+[settings]
+screenchange-reload = true
+
+[global/wm]
+margin-top = 22MM
+margin-bottom = 0
+
