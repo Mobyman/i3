@@ -1,5 +1,8 @@
 set $mod Mod4
 
+# set $monitor eDP-1
+set $monitor HDMI-1
+
 new_window pixel 1
 new_float normal
 
@@ -19,6 +22,7 @@ bindsym $mod+Return exec i3-sensible-terminal
 
 # Window kill command
 bindsym $mod+Shift+c kill
+
 
 # start program launcher
 bindsym $mod+r exec --no-startup-id rofi -show run -columns 1 -lines 10 -theme gruvbox-dark-hard -display-run "" -font "GohuFont 12"
@@ -126,6 +130,10 @@ bindsym $mod+Shift+6 move container to workspace $ws6; workspace $ws6
 bindsym $mod+Shift+7 move container to workspace $ws7; workspace $ws7
 bindsym $mod+Shift+8 move container to workspace $ws8; workspace $ws8
 
+workspace $ws1 output $monitor
+workspace $ws2 output $monitor
+workspace $ws3 output $monitor
+
 # Open specific applications in floating mode
 for_window [title="alsamixer"] floating enable border pixel 1
 for_window [class="Clipgrab"] floating enable
@@ -140,9 +148,9 @@ for_window [class="Xfburn"] floating enable
 for_window [class="google-chrome"] floating enable border normal
 for_window [class="terminator"] floating enable border normal
 
-assign [class="Telegram"] 3
-assign [class="google-chrome"] 1
-assign [class="jetbrains-idea"] 2
+assign [class="google-chrome"] $ws1
+assign [class="jetbrains-idea"] $ws2
+assign [class="Telegram"] $ws3
 
 # switch to workspace with urgent window automatically
 for_window [urgent=latest] focus
@@ -208,14 +216,14 @@ exec --no-startup-id redshift-gtk
 # exec --no-startup-id pamac-tray
 exec --no-startup-id clipit
 exec --no-startup-id synclient HorizTwoFingerScroll=1
-
+exec --no-startup-id setxkbmap -layout "rukbi_en, rukbi_ru" -option "grp:alt_shift_toggle, grp_led:scroll, lv3:ralt_switch"
 #exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
 exec_always --no-startup-id /$HOME/.config/polybar/i3wmthemer_bar_launch.sh
 exec --no-startup-id dunst -config ~/.config/i3/dunst.conf
 
 # Theme colors
-client.focused #bfbfbf #16206f #bfbfbf #193a48 #
+client.focused #bfbfbf #16206ff #bfbfbf #193a48 #193a48 #193a48
 client.focused_inactive #bfbfbf #162025 #bfbfbf #193a48 #193a48
 client.unfocused #bfbfbf #162025 #bfbfbf #193a48 #193a48
 client.urgent #bfbfbf #162025 #bfbfbf #193a48 #193a48
@@ -266,11 +274,12 @@ mode "$mode_gaps_outer" {
         bindsym Escape mode "default"
 }
 
-set $displayMode "Set display mode [H]DMI [L]aptop"
+set $displayMode "Set display mode [H]DMI [L]aptop [E]xternal"
 bindsym $mod+x mode $displayMode
 mode $displayMode {
     bindsym l exec "~/.screenlayout/laptop.sh &", mode "default"
     bindsym h exec "~/.screenlayout/hdmi.sh &", mode "default"
+    bindsym e exec "~/.screenlayout/external.sh &", mode "default"
 
     bindsym Return mode "default"
     bindsym Escape mode "default"
